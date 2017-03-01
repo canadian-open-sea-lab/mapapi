@@ -17,6 +17,9 @@ public class Topic {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "root")
     private Category root;
+    @Basic
+    @Column(name = "code")
+    private String code;
 
     public Integer getId() {
         return id;
@@ -24,6 +27,14 @@ public class Topic {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override

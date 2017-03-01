@@ -3,7 +3,7 @@ package ca.ogsl.mapapi.services;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.LayerDescription;
 import ca.ogsl.mapapi.models.LayerInfo;
-import ca.ogsl.mapapi.models.Topic;
+import ca.ogsl.mapapi.util.GenericsUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,54 +11,32 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-//TODO: Implémenter ces différents services de manière générique, en utilisant les paths appropriés pour y accéder et en passant les bons paramètres
-@Path("testservice")
-public class Test{
+/**
+ * Created by desjardisna on 2017-02-28.
+ */
+@SuppressWarnings("Duplicates")
+@Path("layer")
+@Produces(MediaType.APPLICATION_JSON)
+public class LayerService {
 
-    public Test(){}
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response categoriesForTopicTest(@QueryParam("lang") String lang){
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf= Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em= emf.createEntityManager();
-        Topic topic;
-        try {
-            topic = em.find(Topic.class,1);
-            return Response.status(200).entity(topic).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return Response.status(500).build();
-    }
+    public LayerService(){}
 
     @GET
-    @Path("layers")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response layersForTopicTest(@QueryParam("lang") String lang){
+    public Response listLayers(@QueryParam("lang") String lang){
         PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf= Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em= emf.createEntityManager();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
         List<Layer> layers;
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
-            Root<Layer> root =  cq.from(Layer.class);
-            Join topicJoin =  root.join("topics");
-            cq.where(cb.and(cb.equal(topicJoin.get("id"),1),cb.equal(root.get("isBackground"),false)));
+            Root<Layer> root = cq.from(Layer.class);
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
             return Response.status(200).entity(layers).build();
@@ -69,23 +47,22 @@ public class Test{
         }
         return Response.status(500).build();
     }
+
     @GET
-    @Path("baselayers")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response baseLayersForTopicTest(@QueryParam("lang") String lang){
+    @Path("{id}")
+    public Response getLayerForId(@QueryParam("lang") String lang, @PathParam("id") Integer id){
         PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf= Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em= emf.createEntityManager();
-        List<Layer> layers;
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
+        Layer layer;
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
-            Root<Layer> root =  cq.from(Layer.class);
-            Join topicJoin =  root.join("topics");
-            cq.where(cb.and(cb.equal(topicJoin.get("id"),1),cb.equal(root.get("isBackground"),true)));
+            Root<Layer> root = cq.from(Layer.class);
+            cq.where(cb.equal(root.get("id"), id));
             TypedQuery<Layer> tq = em.createQuery(cq);
-            layers = tq.getResultList();
-            return Response.status(200).entity(layers).build();
+            layer = GenericsUtil.getSingleResultOrNull(tq);
+            return Response.status(200).entity(layer).build();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -94,9 +71,32 @@ public class Test{
         return Response.status(500).build();
     }
     @GET
-    @Path("layerinfo")
+    @Path("getLayerForCode")
+    public Response getlayerForCode(@QueryParam("lang") String lang, @QueryParam("code") String code){
+        PersistenceManager.setLanguageContext(lang);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
+        Layer layer;
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
+            Root<Layer> root = cq.from(Layer.class);
+            cq.where(cb.equal(root.get("code"), code));
+            TypedQuery<Layer> tq = em.createQuery(cq);
+            layer = GenericsUtil.getSingleResultOrNull(tq);
+            return Response.status(200).entity(layer).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return Response.status(500).build();
+    }
+
+    @GET
+    @Path("{id}/getLayerInformation")
     @Produces(MediaType.TEXT_HTML)
-    public Response layerInfo(@QueryParam("lang") String lang){
+    public Response getLayerInformation(@QueryParam("lang") String lang, @PathParam("id") Integer id){
         String htmlContent="";
         htmlContent+="<div class='layerInfo'>";
         htmlContent+="<div class='layerDescription'>";
@@ -110,7 +110,7 @@ public class Test{
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<LayerDescription> cq = cb.createQuery(LayerDescription.class);
             Root<LayerDescription> root =  cq.from(LayerDescription.class);
-            cq.where(cb.and(cb.equal(root.get("layerId"),1)));
+            cq.where(cb.and(cb.equal(root.get("layerId"),id)));
             TypedQuery<LayerDescription> tq = em.createQuery(cq);
             layerDescription = tq.getSingleResult();
 
