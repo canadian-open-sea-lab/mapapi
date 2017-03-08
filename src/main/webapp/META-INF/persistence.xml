@@ -12,6 +12,7 @@
         <class>ca.ogsl.mapapi.models.Source</class>
         <class>ca.ogsl.mapapi.models.LayerInfo</class>
         <class>ca.ogsl.mapapi.models.LayerDescription</class>
+        <class>ca.ogsl.mapapi.models.Legend</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.transaction.factory_class" value="org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory" />

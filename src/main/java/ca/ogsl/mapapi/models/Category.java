@@ -1,5 +1,6 @@
 package ca.ogsl.mapapi.models;
 
+import ca.ogsl.mapapi.services.PersistenceManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -45,8 +46,12 @@ public class Category {
         this.id = id;
     }
 
+    public String getLabel__(){
+        return PersistenceManager.getLocalizedString(this.labelFr, this.labelEn);
+    }
+
     public String getLabelFr() {
-        return labelFr;
+        return PersistenceManager.getIfNoContextLanguage(this.labelFr);
     }
 
     public void setLabelFr(String labelFr) {
@@ -54,13 +59,12 @@ public class Category {
     }
 
     public String getLabelEn() {
-        return labelEn;
+        return PersistenceManager.getIfNoContextLanguage(this.labelEn);
     }
 
     public void setLabelEn(String labelEn) {
         this.labelEn = labelEn;
     }
-
     public String getType() {
         return type;
     }

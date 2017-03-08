@@ -130,7 +130,7 @@ public class TopicService {
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root =  cq.from(Layer.class);
             Join topicJoin =  root.join("topics");
-            cq.where(cb.and(cb.equal(topicJoin.get("id"),1),cb.equal(root.get("isBackground"),false)));
+            cq.where(cb.and(cb.equal(topicJoin.get("code"),code),cb.equal(root.get("isBackground"),false)));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
             return Response.status(200).entity(layers).build();

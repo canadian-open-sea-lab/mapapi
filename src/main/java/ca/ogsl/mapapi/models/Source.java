@@ -49,6 +49,10 @@ public class Source {
     @Basic
     @Column(name = "tilesorigin")
     private String tilesOrigin;
+    @Basic
+    @JsonProperty(value = "isTimeEnabled")
+    @Column(name = "istimeenabled")
+    private Boolean isTimeEnabled;
 
     public Integer getId() {
         return id;
@@ -146,6 +150,16 @@ public class Source {
 
     public void setTilesOrigin(String tilesorigin) {
         this.tilesOrigin = tilesorigin;
+    }
+
+    @JsonProperty(value = "isTimeEnabled")
+    public Boolean isTimeEnabled() {
+        return isTimeEnabled;
+    }
+
+    @JsonProperty(value = "isTimeEnabled")
+    public void setTimeEnabled(Boolean timeEnabled) {
+        isTimeEnabled = timeEnabled;
     }
 
     @Override

@@ -2,10 +2,12 @@ package ca.ogsl.mapapi.models;
 
 import ca.ogsl.mapapi.services.PersistenceManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by desjardisna on 2017-02-20.
@@ -37,19 +39,25 @@ public class Layer {
     @JsonProperty(value = "isVisible")
     @Column(name = "isvisible")
     private Boolean isVisible;
-
     @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "source_id")
     private Source source;
     @Basic
+    @JsonProperty(value = "isBackground")
     @Column(name = "isbackground")
     private Boolean isBackground;
-
+    @Basic
+    @JsonProperty(value = "isTimeEnabled")
+    @Column(name = "istimeenabled")
+    private Boolean isTimeEnabled;
     @JoinTable(name = "layer_topic", joinColumns = {
             @JoinColumn(name = "layer_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
             @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)})
     @ManyToMany
     private Collection<Topic> topics;
+    @OneToMany(mappedBy = "layer", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Legend> legends;
 
     public Integer getId() {
         return id;
@@ -129,12 +137,24 @@ public class Layer {
         this.source = source;
     }
 
+    @JsonProperty(value = "isBackground")
     public Boolean isBackground() {
         return isBackground;
     }
 
+    @JsonProperty(value = "isBackground")
     public void setBackground(Boolean background) {
         isBackground = background;
+    }
+
+    @JsonProperty(value = "isTimeEnabled")
+    public Boolean isTimeEnabled() {
+        return isTimeEnabled;
+    }
+
+    @JsonProperty(value = "isTimeEnabled")
+    public void setTimeEnabled(Boolean timeEnabled) {
+        isTimeEnabled = timeEnabled;
     }
 
 
@@ -144,6 +164,14 @@ public class Layer {
 
     public void setTopics(Collection<Topic> topics) {
         this.topics = topics;
+    }
+
+    public Set<Legend> getLegends() {
+        return legends;
+    }
+
+    public void setLegends(Set<Legend> legends) {
+        this.legends = legends;
     }
 
     @Override
