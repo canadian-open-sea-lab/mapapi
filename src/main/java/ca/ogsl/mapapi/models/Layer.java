@@ -39,7 +39,7 @@ public class Layer {
     @JsonProperty(value = "isVisible")
     @Column(name = "isvisible")
     private Boolean isVisible;
-    @OneToOne(fetch=FetchType.EAGER)
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "source_id")
     private Source source;
     @Basic
@@ -55,7 +55,7 @@ public class Layer {
             @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)})
     @ManyToMany
     private Collection<Topic> topics;
-    @OneToMany(mappedBy = "layer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "layer", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Legend> legends;
 

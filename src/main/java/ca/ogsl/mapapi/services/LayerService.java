@@ -4,6 +4,7 @@ import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.LayerDescription;
 import ca.ogsl.mapapi.models.LayerInfo;
 import ca.ogsl.mapapi.util.GenericsUtil;
+import org.hibernate.transform.DistinctResultTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,6 +12,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -37,9 +39,11 @@ public class LayerService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root = cq.from(Layer.class);
+            Join sourceJoin = (Join)root.fetch("source");
+            Join legendsJoin = (Join)root.fetch("legends");
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
-            return Response.status(200).entity(layers).build();
+            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -59,6 +63,8 @@ public class LayerService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root = cq.from(Layer.class);
+            Join sourceJoin = (Join)root.fetch("source");
+            Join legendsJoin = (Join)root.fetch("legends");
             cq.where(cb.equal(root.get("id"), id));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layer = GenericsUtil.getSingleResultOrNull(tq);
@@ -81,6 +87,8 @@ public class LayerService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root = cq.from(Layer.class);
+            Join sourceJoin = (Join)root.fetch("source");
+            Join legendsJoin = (Join)root.fetch("legends");
             cq.where(cb.equal(root.get("code"), code));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layer = GenericsUtil.getSingleResultOrNull(tq);

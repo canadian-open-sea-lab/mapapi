@@ -14,7 +14,7 @@ public class Topic {
     @Id
     @Column(name = "id")
     private Integer id;
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "root")
     private Category root;
     @Basic

@@ -35,7 +35,7 @@ public class Category {
     @JoinTable(name = "category_child", joinColumns = {
             @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
             @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false)})
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany(fetch=FetchType.LAZY)
     private Collection<Category> categories;
 
     public Integer getId() {
@@ -75,6 +75,10 @@ public class Category {
 
     @JsonProperty(value="isExpanded")
     public Boolean isExpanded() {
+        return isExpanded;
+    }
+    @JsonProperty(value="isExpanded")
+    public Boolean getExpanded() {
         return isExpanded;
     }
 

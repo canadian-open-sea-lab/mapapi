@@ -3,6 +3,8 @@ package ca.ogsl.mapapi.services;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.Topic;
 import ca.ogsl.mapapi.util.GenericsUtil;
+import org.hibernate.criterion.Distinct;
+import org.hibernate.transform.DistinctResultTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,7 +42,7 @@ public class TopicService {
             Root<Topic> root = cq.from(Topic.class);
             TypedQuery<Topic> tq = em.createQuery(cq);
             topics = tq.getResultList();
-            return Response.status(200).entity(topics).build();
+            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(topics)).build();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -83,9 +85,12 @@ public class TopicService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Topic> cq = cb.createQuery(Topic.class);
             Root<Topic> root = cq.from(Topic.class);
+            Join categoryJoin = (Join) root.fetch("root");
             cq.where(cb.equal(root.get("code"), code));
             TypedQuery<Topic> tq = em.createQuery(cq);
             topic = GenericsUtil.getSingleResultOrNull(tq);
+            GenericsUtil gu= new GenericsUtil();
+            Topic finalTopic=gu.recursiveInitialize(topic, Topic.class);
             return Response.status(200).entity(topic).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,10 +111,11 @@ public class TopicService {
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root =  cq.from(Layer.class);
             Join topicJoin =  root.join("topics");
+            Join sourceJoin = (Join)root.fetch("source");
             cq.where(cb.and(cb.equal(topicJoin.get("code"),code),cb.equal(root.get("isBackground"),true)));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
-            return Response.status(200).entity(layers).build();
+            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -130,10 +136,12 @@ public class TopicService {
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root =  cq.from(Layer.class);
             Join topicJoin =  root.join("topics");
+            Join legendsJoin = (Join)root.fetch("legends");
+            Join sourceJoin = (Join)root.fetch("source");
             cq.where(cb.and(cb.equal(topicJoin.get("code"),code),cb.equal(root.get("isBackground"),false)));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
-            return Response.status(200).entity(layers).build();
+            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
