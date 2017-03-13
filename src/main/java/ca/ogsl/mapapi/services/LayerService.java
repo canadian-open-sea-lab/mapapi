@@ -10,11 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -39,8 +37,8 @@ public class LayerService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root = cq.from(Layer.class);
-            Join sourceJoin = (Join)root.fetch("source");
-            Join legendsJoin = (Join)root.fetch("legends");
+            Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
+            Join legendsJoin = (Join)root.fetch("legends", JoinType.LEFT);
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
             return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
@@ -63,8 +61,8 @@ public class LayerService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root = cq.from(Layer.class);
-            Join sourceJoin = (Join)root.fetch("source");
-            Join legendsJoin = (Join)root.fetch("legends");
+            Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
+            Join legendsJoin = (Join)root.fetch("legends", JoinType.LEFT);
             cq.where(cb.equal(root.get("id"), id));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layer = GenericsUtil.getSingleResultOrNull(tq);
@@ -87,8 +85,8 @@ public class LayerService {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
             Root<Layer> root = cq.from(Layer.class);
-            Join sourceJoin = (Join)root.fetch("source");
-            Join legendsJoin = (Join)root.fetch("legends");
+            Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
+            Join legendsJoin = (Join)root.fetch("legends", JoinType.LEFT);
             cq.where(cb.equal(root.get("code"), code));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layer = GenericsUtil.getSingleResultOrNull(tq);
@@ -120,7 +118,10 @@ public class LayerService {
             Root<LayerDescription> root =  cq.from(LayerDescription.class);
             cq.where(cb.and(cb.equal(root.get("layerId"),id)));
             TypedQuery<LayerDescription> tq = em.createQuery(cq);
-            layerDescription = tq.getSingleResult();
+            layerDescription = GenericsUtil.getSingleResultOrNull(tq);
+            if (layerDescription==null){
+                return Response.status(404).entity("No information found for layer").build();
+            }
 
             CriteriaBuilder cb2= em.getCriteriaBuilder();
             CriteriaQuery<LayerInfo> cq2 = cb.createQuery(LayerInfo.class);

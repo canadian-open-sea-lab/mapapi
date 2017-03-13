@@ -1,11 +1,10 @@
 package ca.ogsl.mapapi.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by desjardisna on 2017-02-20.
@@ -53,6 +52,11 @@ public class Source {
     @JsonProperty(value = "isTimeEnabled")
     @Column(name = "istimeenabled")
     private Boolean isTimeEnabled;
+
+
+    @OneToMany(mappedBy = "source", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<UrlParam> urlParams;
 
     public Integer getId() {
         return id;
@@ -162,6 +166,13 @@ public class Source {
         isTimeEnabled = timeEnabled;
     }
 
+    public Set<UrlParam> getUrlParams() {
+        return urlParams;
+    }
+
+    public void setUrlParams(Set<UrlParam> urlParams) {
+        this.urlParams = urlParams;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
