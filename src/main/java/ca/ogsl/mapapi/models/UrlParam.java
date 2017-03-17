@@ -1,13 +1,12 @@
 package ca.ogsl.mapapi.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 
-/**
- * Created by desjardisna on 2017-03-09.
- */
 @Entity
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class UrlParam {
     @Id
     @Column(name = "id")

@@ -18,7 +18,7 @@
         <properties>
             <property name="hibernate.transaction.factory_class" value="org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL94Dialect" />
-            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="false"/>
         </properties>
     </persistence-unit>

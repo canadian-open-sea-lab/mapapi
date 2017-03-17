@@ -1,15 +1,14 @@
 package ca.ogsl.mapapi.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Set;
 
-/**
- * Created by desjardisna on 2017-02-20.
- */
 @Entity
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Source {
     @Id
     @Column(name = "id")

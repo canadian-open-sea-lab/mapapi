@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 
-/**
- * Created by desjardisna on 2017-02-13.
- */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Topic {

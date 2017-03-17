@@ -7,9 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.util.Collection;
 
-/**
- * Created by desjardisna on 2017-02-13.
- */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Category {

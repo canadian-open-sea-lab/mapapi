@@ -9,9 +9,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
-/**
- * Created by desjardisna on 2017-02-20.
- */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Layer {
@@ -39,7 +36,7 @@ public class Layer {
     @JsonProperty(value = "isVisible")
     @Column(name = "isvisible")
     private Boolean isVisible;
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_id")
     private Source source;
     @Basic
@@ -58,12 +55,15 @@ public class Layer {
     @OneToMany(mappedBy = "layer", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Legend> legends;
+    @Basic
+    @Column(name = "styleurl")
+    private String styleUrl;
 
     public Integer getId() {
         return id;
     }
 
-    public String getLabel__(){
+    public String getLabel__() {
         return PersistenceManager.getLocalizedString(this.labelFr, this.labelEn);
     }
 
@@ -172,6 +172,14 @@ public class Layer {
 
     public void setLegends(Set<Legend> legends) {
         this.legends = legends;
+    }
+
+    public String getStyleUrl() {
+        return styleUrl;
+    }
+
+    public void setStyleUrl(String styleUrl) {
+        this.styleUrl = styleUrl;
     }
 
     @Override

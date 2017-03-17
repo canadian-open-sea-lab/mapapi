@@ -3,14 +3,13 @@ package ca.ogsl.mapapi.models;
 import ca.ogsl.mapapi.services.PersistenceManager;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
-/**
- * Created by desjardisna on 2017-03-03.
- */
 @Entity
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Legend {
     @Id
     @Column(name = "id")

@@ -1,16 +1,15 @@
 package ca.ogsl.mapapi.models;
 
 import ca.ogsl.mapapi.services.PersistenceManager;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
- * Created by desjardisna on 2017-02-27.
- */
 @Entity
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerInfo {
     @Id
     @Column(name = "id")
