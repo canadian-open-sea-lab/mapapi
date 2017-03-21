@@ -11,6 +11,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Source {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Basic
@@ -53,7 +54,7 @@ public class Source {
     private Boolean isTimeEnabled;
 
 
-    @OneToMany(mappedBy = "source", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "source", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JsonManagedReference
     private Set<UrlParam> urlParams;
 

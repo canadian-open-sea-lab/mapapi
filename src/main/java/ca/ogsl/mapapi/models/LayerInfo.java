@@ -3,15 +3,13 @@ package ca.ogsl.mapapi.models;
 import ca.ogsl.mapapi.services.PersistenceManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Basic

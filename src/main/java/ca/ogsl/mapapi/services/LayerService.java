@@ -6,10 +6,7 @@ import ca.ogsl.mapapi.models.LayerInfo;
 import ca.ogsl.mapapi.util.GenericsUtil;
 import org.hibernate.transform.DistinctResultTransformer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
@@ -49,6 +46,17 @@ public class LayerService {
         }
         return Response.status(500).build();
     }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response layers(Layer layer) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        em.merge(layer);
+        et.commit();
+        return Response.status(200).entity(layer).build();
+    }
 
     @GET
     @Path("{id}")
@@ -63,6 +71,7 @@ public class LayerService {
             Root<Layer> root = cq.from(Layer.class);
             Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
             Join legendsJoin = (Join)root.fetch("legends", JoinType.LEFT);
+            Join urlParamJoin = (Join) sourceJoin.fetch("urlParams", JoinType.LEFT);
             cq.where(cb.equal(root.get("id"), id));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layer = GenericsUtil.getSingleResultOrNull(tq);
@@ -87,6 +96,7 @@ public class LayerService {
             Root<Layer> root = cq.from(Layer.class);
             Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
             Join legendsJoin = (Join)root.fetch("legends", JoinType.LEFT);
+            Join urlParamJoin = (Join) sourceJoin.fetch("urlParams", JoinType.LEFT);
             cq.where(cb.equal(root.get("code"), code));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layer = GenericsUtil.getSingleResultOrNull(tq);
@@ -102,10 +112,7 @@ public class LayerService {
     @GET
     @Path("{id}/getLayerInformation")
     @Produces(MediaType.TEXT_HTML)
-    public Response getLayerInformation(@QueryParam("lang") String lang, @PathParam("id") Integer id){
-        String htmlContent="";
-        htmlContent+="<div class='layerInfo'>";
-        htmlContent+="<div class='layerDescription'>";
+    public Response getLayerInformation(@QueryParam("lang") String lang, @PathParam("id") Integer layerId){
 
         PersistenceManager.setLanguageContext(lang);
         EntityManagerFactory emf= Persistence.createEntityManagerFactory("mapapi");
@@ -113,33 +120,12 @@ public class LayerService {
         LayerDescription layerDescription;
         List<LayerInfo> layerInfos;
         try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<LayerDescription> cq = cb.createQuery(LayerDescription.class);
-            Root<LayerDescription> root =  cq.from(LayerDescription.class);
-            cq.where(cb.and(cb.equal(root.get("layerId"),id)));
-            TypedQuery<LayerDescription> tq = em.createQuery(cq);
-            layerDescription = GenericsUtil.getSingleResultOrNull(tq);
+            layerDescription = getLayerDescription(layerId, em);
             if (layerDescription==null){
                 return Response.status(404).entity("No information found for layer").build();
             }
-
-            CriteriaBuilder cb2= em.getCriteriaBuilder();
-            CriteriaQuery<LayerInfo> cq2 = cb.createQuery(LayerInfo.class);
-            Root<LayerInfo> root2 =  cq2.from(LayerInfo.class);
-            cq2.where(cb2.equal(root2.get("layerId"),1));
-            TypedQuery<LayerInfo> tq2= em.createQuery(cq2);
-            layerInfos = tq2.getResultList();
-
-
-            htmlContent+=layerDescription.getDescription__();
-            htmlContent+="</div>";
-            htmlContent+="<div class='layerInformations'>";
-            for (LayerInfo layerInfo: layerInfos){
-                htmlContent+="<span>"+layerInfo.getLabel__()+"</span><br>";
-            }
-            htmlContent+="</div>";
-            htmlContent+="</div>";
-
+            layerInfos = getLayerInfos(layerId, em);
+            String htmlContent = getLayerInformationHtml(layerDescription, layerInfos);
 
             return Response.status(200).entity(htmlContent).build();
         } catch (Exception e) {
@@ -148,5 +134,52 @@ public class LayerService {
             em.close();
         }
         return Response.status(500).build();
+    }
+
+    private List<LayerInfo> getLayerInfos(Integer layerId, EntityManager em) {
+        List<LayerInfo> layerInfos;CriteriaBuilder cb2= em.getCriteriaBuilder();
+        CriteriaQuery<LayerInfo> cq2 = cb2.createQuery(LayerInfo.class);
+        Root<LayerInfo> root2 =  cq2.from(LayerInfo.class);
+        cq2.where(cb2.equal(root2.get("layerId"),layerId));
+        TypedQuery<LayerInfo> tq2= em.createQuery(cq2);
+        layerInfos = tq2.getResultList();
+        return layerInfos;
+    }
+
+    private LayerDescription getLayerDescription(Integer layerId, EntityManager em) {
+        LayerDescription layerDescription;CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<LayerDescription> cq = cb.createQuery(LayerDescription.class);
+        Root<LayerDescription> root =  cq.from(LayerDescription.class);
+        cq.where(cb.and(cb.equal(root.get("layerId"),layerId)));
+        TypedQuery<LayerDescription> tq = em.createQuery(cq);
+        layerDescription = GenericsUtil.getSingleResultOrNull(tq);
+        return layerDescription;
+    }
+
+    private String getLayerInformationHtml(LayerDescription layerDescription, List<LayerInfo> layerInfos) {
+        StringBuilder stringBuilder= new StringBuilder();
+        stringBuilder.append("<div class='layerInfo'>");
+        stringBuilder.append("<h4 class='layerDescriptionTitle'>");
+        stringBuilder.append(layerDescription.getTitle__()).append("</h4>");
+        stringBuilder.append("<div class='layerDescription'>");
+        stringBuilder.append(layerDescription.getDescription__());
+        stringBuilder.append("</div>");
+        stringBuilder.append("<div class='layerInformationsContainer'><h5 class='layerInformationsTitle'>Informations</h5>");
+        stringBuilder.append("<table class='layerInformations'><tbody>");
+        for (LayerInfo layerInfo: layerInfos){
+            stringBuilder.append("<tr class='layerInformation'><td class='layerInformationTd'>").append(layerInfo.getLabel__()).append("</td><td class='layerInformationTd'>");
+            if (layerInfo.getUrl__()!=null && !layerInfo.getUrl__().equals("")){
+                stringBuilder.append("<a class='layerInformationLink' target='_blank' href='").append(layerInfo.getUrl__()).append("'>")
+                        .append(layerInfo.getValue__()).append("</a></td>");
+            }
+            else{
+                stringBuilder.append(layerInfo.getValue__()).append("</td>");
+            }
+            stringBuilder.append("</tr>");
+        }
+        stringBuilder.append("</tbody></table>");
+        stringBuilder.append("</div>");
+        stringBuilder.append("</div>");
+        return stringBuilder.toString();
     }
 }

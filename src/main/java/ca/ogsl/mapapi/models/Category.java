@@ -11,6 +11,7 @@ import java.util.Collection;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Basic

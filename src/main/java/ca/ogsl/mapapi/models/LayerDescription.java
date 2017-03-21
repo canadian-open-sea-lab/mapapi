@@ -3,23 +3,27 @@ package ca.ogsl.mapapi.models;
 import ca.ogsl.mapapi.services.PersistenceManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerDescription {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Basic
-    @Column(name = "descriptionFr")
+    @Column(name = "descriptionfr")
     private String descriptionFr;
     @Basic
-    @Column(name = "descriptionEn")
+    @Column(name = "descriptionen")
     private String descriptionEn;
+    @Basic
+    @Column(name = "titlefr")
+    private String titleFr;
+    @Basic
+    @Column(name = "titleen")
+    private String titleEn;
     @Column(name ="layer_id")
     private Integer layerId;
 
@@ -45,6 +49,25 @@ public class LayerDescription {
 
     public void setDescriptionEn(String descriptionEn) {
         this.descriptionEn = descriptionEn;
+    }
+
+    public String getTitleFr() {
+        return PersistenceManager.getIfNoContextLanguage(this.titleFr);
+    }
+
+    public void setTitleFr(String titleFr) {
+        this.titleFr = titleFr;
+    }
+
+    public String getTitleEn() {
+        return PersistenceManager.getIfNoContextLanguage(this.titleEn);
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
+    }
+    public String getTitle__(){
+        return PersistenceManager.getLocalizedString(this.titleFr, this.titleEn);
     }
 
     public String getDescription__(){

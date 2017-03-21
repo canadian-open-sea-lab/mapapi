@@ -13,6 +13,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Layer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "labelfr", nullable = false)
@@ -36,7 +37,7 @@ public class Layer {
     @JsonProperty(value = "isVisible")
     @Column(name = "isvisible")
     private Boolean isVisible;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "source_id")
     private Source source;
     @Basic
@@ -52,7 +53,7 @@ public class Layer {
             @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)})
     @ManyToMany
     private Collection<Topic> topics;
-    @OneToMany(mappedBy = "layer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "layer", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JsonManagedReference
     private Set<Legend> legends;
     @Basic
