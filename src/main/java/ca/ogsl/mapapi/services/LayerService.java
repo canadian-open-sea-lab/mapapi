@@ -167,7 +167,7 @@ public class LayerService {
         stringBuilder.append("<div class='layerInformationsContainer'><h5 class='layerInformationsTitle'>Informations</h5>");
         stringBuilder.append("<table class='layerInformations'><tbody>");
         for (LayerInfo layerInfo: layerInfos){
-            stringBuilder.append("<tr class='layerInformation'><td class='layerInformationTd'>").append(layerInfo.getLabel__()).append("</td><td class='layerInformationTd'>");
+            stringBuilder.append("<tr class='layerInformation'><td class='layerInformationTdLeft'>").append(layerInfo.getLabel__()).append("</td><td class='layerInformationTdRight'>");
             if (layerInfo.getUrl__()!=null && !layerInfo.getUrl__().equals("")){
                 stringBuilder.append("<a class='layerInformationLink' target='_blank' href='").append(layerInfo.getUrl__()).append("'>")
                         .append(layerInfo.getValue__()).append("</a></td>");
