@@ -33,6 +33,7 @@ public class Category {
     @JoinTable(name = "category_child", joinColumns = {
             @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
             @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false)})
+    @OrderBy("type ASC")
     @ManyToMany(fetch=FetchType.LAZY)
     private Collection<Category> categories;
 
