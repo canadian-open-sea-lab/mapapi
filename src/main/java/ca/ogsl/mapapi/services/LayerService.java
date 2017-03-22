@@ -137,12 +137,13 @@ public class LayerService {
     }
 
     private List<LayerInfo> getLayerInfos(Integer layerId, EntityManager em) {
-        List<LayerInfo> layerInfos;CriteriaBuilder cb2= em.getCriteriaBuilder();
-        CriteriaQuery<LayerInfo> cq2 = cb2.createQuery(LayerInfo.class);
-        Root<LayerInfo> root2 =  cq2.from(LayerInfo.class);
-        cq2.where(cb2.equal(root2.get("layerId"),layerId));
-        TypedQuery<LayerInfo> tq2= em.createQuery(cq2);
-        layerInfos = tq2.getResultList();
+        List<LayerInfo> layerInfos;CriteriaBuilder cb= em.getCriteriaBuilder();
+        CriteriaQuery<LayerInfo> cq = cb.createQuery(LayerInfo.class);
+        Root<LayerInfo> root =  cq.from(LayerInfo.class);
+        cq.where(cb.equal(root.get("layerId"),layerId));
+        cq.orderBy(cb.asc(root.get(PersistenceManager.appendLanguageToProperty("label__"))));
+        TypedQuery<LayerInfo> tq= em.createQuery(cq);
+        layerInfos = tq.getResultList();
         return layerInfos;
     }
 
