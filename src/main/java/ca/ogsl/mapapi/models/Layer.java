@@ -56,9 +56,11 @@ public class Layer {
     @OneToMany(mappedBy = "layer", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JsonManagedReference
     private Set<Legend> legends;
-    @Basic
-    @Column(name = "styleurl")
-    private String styleUrl;
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "style_id")
+    private Style style;
+    @Column(name = "style_id", updatable = false, insertable = false)
+    private Integer styleId;
 
     public Integer getId() {
         return id;
@@ -175,12 +177,20 @@ public class Layer {
         this.legends = legends;
     }
 
-    public String getStyleUrl() {
-        return styleUrl;
+    public Style getStyle() {
+        return style;
     }
 
-    public void setStyleUrl(String styleUrl) {
-        this.styleUrl = styleUrl;
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+
+    public Integer getStyleId() {
+        return styleId;
+    }
+
+    public void setStyleId(Integer styleId) {
+        this.styleId = styleId;
     }
 
     @Override
