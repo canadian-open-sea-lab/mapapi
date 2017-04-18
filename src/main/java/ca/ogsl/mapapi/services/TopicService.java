@@ -3,13 +3,9 @@ package ca.ogsl.mapapi.services;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.Topic;
 import ca.ogsl.mapapi.util.GenericsUtil;
-import org.hibernate.criterion.Distinct;
 import org.hibernate.transform.DistinctResultTransformer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
@@ -17,9 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-/**
- * Created by desjardisna on 2017-02-28.
- */
 @SuppressWarnings("Duplicates")
 @Path("topic")
 @Produces(MediaType.APPLICATION_JSON)
@@ -87,8 +80,8 @@ public class TopicService {
             cq.where(cb.equal(root.get("code"), code));
             TypedQuery<Topic> tq = em.createQuery(cq);
             topic = GenericsUtil.getSingleResultOrNull(tq);
-            GenericsUtil gu= new GenericsUtil();
-            Topic finalTopic=gu.recursiveInitialize(topic, Topic.class);
+            GenericsUtil gu = new GenericsUtil();
+            Topic finalTopic = gu.recursiveInitialize(topic, Topic.class);
             return Response.status(200).entity(topic).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,21 +90,34 @@ public class TopicService {
         }
         return Response.status(500).build();
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response topics(Topic topic) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        em.merge(topic);
+        et.commit();
+        return Response.status(200).entity(topic).build();
+    }
+
     @GET
     @Path("{code}/BaseLayerCatalog")
     public Response getBaseLayersForTopic(@QueryParam("lang") String lang, @PathParam("code") String code) {
         PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf= Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em= emf.createEntityManager();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
         List<Layer> layers;
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
-            Root<Layer> root =  cq.from(Layer.class);
-            Join topicJoin =  root.join("topics", JoinType.LEFT);
-            Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
+            Root<Layer> root = cq.from(Layer.class);
+            Join topicJoin = root.join("topics", JoinType.LEFT);
+            Join sourceJoin = (Join) root.fetch("source", JoinType.LEFT);
             Join urlParamJoin = (Join) sourceJoin.fetch("urlParams", JoinType.LEFT);
-            cq.where(cb.and(cb.equal(topicJoin.get("code"),code),cb.equal(root.get("isBackground"),true)));
+            cq.where(cb.and(cb.equal(topicJoin.get("code"), code), cb.equal(root.get("isBackground"), true)));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
             return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
@@ -125,20 +131,20 @@ public class TopicService {
 
     @GET
     @Path("{code}/LayerCatalog")
-    public Response getLayersForTopic(@QueryParam("lang") String lang, @PathParam("code") String code){
+    public Response getLayersForTopic(@QueryParam("lang") String lang, @PathParam("code") String code) {
         PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf= Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em= emf.createEntityManager();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+        EntityManager em = emf.createEntityManager();
         List<Layer> layers;
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
-            Root<Layer> root =  cq.from(Layer.class);
-            Join topicJoin =  root.join("topics", JoinType.LEFT);
-            Join legendsJoin = (Join)root.fetch("legends", JoinType.LEFT);
-            Join sourceJoin = (Join)root.fetch("source", JoinType.LEFT);
+            Root<Layer> root = cq.from(Layer.class);
+            Join topicJoin = root.join("topics", JoinType.LEFT);
+            Join legendsJoin = (Join) root.fetch("legends", JoinType.LEFT);
+            Join sourceJoin = (Join) root.fetch("source", JoinType.LEFT);
             Join urlParamJoin = (Join) sourceJoin.fetch("urlParams", JoinType.LEFT);
-            cq.where(cb.and(cb.equal(topicJoin.get("code"),code),cb.equal(root.get("isBackground"),false)));
+            cq.where(cb.and(cb.equal(topicJoin.get("code"), code), cb.equal(root.get("isBackground"), false)));
             TypedQuery<Layer> tq = em.createQuery(cq);
             layers = tq.getResultList();
             return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();

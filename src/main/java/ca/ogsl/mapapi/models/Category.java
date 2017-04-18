@@ -34,7 +34,7 @@ public class Category {
             @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
             @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false)})
     @OrderBy("type ASC")
-    @ManyToMany(fetch=FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Collection<Category> categories;
 
     public Integer getId() {
