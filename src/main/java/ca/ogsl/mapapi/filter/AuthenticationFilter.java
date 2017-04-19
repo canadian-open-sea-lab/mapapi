@@ -24,6 +24,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) {
         String apiKey = requestContext.getHeaderString("API-KEY");
         MultivaluedMap<String,String> headers=requestContext.getHeaders();
+        headers.putSingle("role", DEFAULT_ROLE);
         if (apiKey!=null){
             try {
                 Configurations configs = new Configurations();
@@ -34,9 +35,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             } catch (ConfigurationException e) {
                 e.printStackTrace();
             }
-        }
-        else{
-            headers.putSingle("role", DEFAULT_ROLE);
         }
     }
 }
