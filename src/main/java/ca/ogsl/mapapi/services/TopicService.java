@@ -99,10 +99,17 @@ public class TopicService {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
             EntityManager em = emf.createEntityManager();
             EntityTransaction et = em.getTransaction();
-            et.begin();
-            em.merge(topic);
-            et.commit();
-            return Response.status(200).entity(topic).build();
+            try {
+                et.begin();
+                em.merge(topic);
+                et.commit();
+                return Response.status(200).entity(topic).build();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
+            return Response.status(500).build();
         }
         else{
             return Response.status(403).build();

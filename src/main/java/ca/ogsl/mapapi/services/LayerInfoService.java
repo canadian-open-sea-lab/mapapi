@@ -51,10 +51,17 @@ public class LayerInfoService {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
             EntityManager em = emf.createEntityManager();
             EntityTransaction et = em.getTransaction();
-            et.begin();
-            em.merge(layerInfo);
-            et.commit();
-            return Response.status(200).entity(layerInfo).build();
+            try {
+                et.begin();
+                em.merge(layerInfo);
+                et.commit();
+                return Response.status(200).entity(layerInfo).build();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
+            return Response.status(500).build();
         }
         else{
             return Response.status(403).build();
@@ -69,12 +76,19 @@ public class LayerInfoService {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
             EntityManager em = emf.createEntityManager();
             EntityTransaction et = em.getTransaction();
-            et.begin();
-            for (LayerInfo layerInfo : layerInfos) {
-                em.merge(layerInfo);
+            try {
+                et.begin();
+                for (LayerInfo layerInfo : layerInfos) {
+                    em.merge(layerInfo);
+                }
+                et.commit();
+                return Response.status(200).entity(layerInfos).build();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
             }
-            et.commit();
-            return Response.status(200).entity(layerInfos).build();
+            return Response.status(500).build();
         }
         else{
             return Response.status(403).build();
