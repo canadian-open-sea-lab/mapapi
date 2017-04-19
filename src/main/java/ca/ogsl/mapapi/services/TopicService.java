@@ -1,5 +1,6 @@
 package ca.ogsl.mapapi.services;
 
+import ca.ogsl.mapapi.filter.AuthenticationFilter;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.Topic;
 import ca.ogsl.mapapi.util.GenericsUtil;
@@ -93,14 +94,19 @@ public class TopicService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response topics(Topic topic) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        em.merge(topic);
-        et.commit();
-        return Response.status(200).entity(topic).build();
+    public Response topics(Topic topic, @HeaderParam("role") String role) {
+        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+            EntityManager em = emf.createEntityManager();
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            em.merge(topic);
+            et.commit();
+            return Response.status(200).entity(topic).build();
+        }
+        else{
+            return Response.status(403).build();
+        }
     }
 
     @GET

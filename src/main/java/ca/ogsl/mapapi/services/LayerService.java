@@ -1,5 +1,6 @@
 package ca.ogsl.mapapi.services;
 
+import ca.ogsl.mapapi.filter.AuthenticationFilter;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.LayerDescription;
 import ca.ogsl.mapapi.models.LayerInfo;
@@ -50,14 +51,19 @@ public class LayerService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response layers(Layer layer) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        em.merge(layer);
-        et.commit();
-        return Response.status(200).entity(layer).build();
+    public Response layers(Layer layer, @HeaderParam("role") String role) {
+        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+            EntityManager em = emf.createEntityManager();
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            em.merge(layer);
+            et.commit();
+            return Response.status(200).entity(layer).build();
+        }
+        else{
+            return Response.status(403).build();
+        }
     }
 
     @GET

@@ -1,5 +1,6 @@
 package ca.ogsl.mapapi.services;
 
+import ca.ogsl.mapapi.filter.AuthenticationFilter;
 import ca.ogsl.mapapi.models.LayerDescription;
 import ca.ogsl.mapapi.util.GenericsUtil;
 import org.hibernate.transform.DistinctResultTransformer;
@@ -66,40 +67,50 @@ public class LayerDescriptionService {
 
     @DELETE
     @Path("{id}")
-    public Response deleteLayerDescriptionForId(@QueryParam("lang") String lang, @PathParam("id") Integer id) {
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        LayerDescription layerDescription;
-        EntityTransaction et = em.getTransaction();
-        try {
-            et.begin();
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<LayerDescription> cq = cb.createQuery(LayerDescription.class);
-            Root<LayerDescription> root = cq.from(LayerDescription.class);
-            cq.where(cb.equal(root.get("id"), id));
-            TypedQuery<LayerDescription> tq = em.createQuery(cq);
-            layerDescription = GenericsUtil.getSingleResultOrNull(tq);
-            em.remove(layerDescription);
-            et.commit();
-            return Response.status(200).entity(layerDescription).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
+    public Response deleteLayerDescriptionForId(@QueryParam("lang") String lang, @PathParam("id") Integer id, @HeaderParam("role") String role) {
+        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+            PersistenceManager.setLanguageContext(lang);
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+            EntityManager em = emf.createEntityManager();
+            LayerDescription layerDescription;
+            EntityTransaction et = em.getTransaction();
+            try {
+                et.begin();
+                CriteriaBuilder cb = em.getCriteriaBuilder();
+                CriteriaQuery<LayerDescription> cq = cb.createQuery(LayerDescription.class);
+                Root<LayerDescription> root = cq.from(LayerDescription.class);
+                cq.where(cb.equal(root.get("id"), id));
+                TypedQuery<LayerDescription> tq = em.createQuery(cq);
+                layerDescription = GenericsUtil.getSingleResultOrNull(tq);
+                em.remove(layerDescription);
+                et.commit();
+                return Response.status(200).entity(layerDescription).build();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
+            return Response.status(500).build();
         }
-        return Response.status(500).build();
+        else{
+            return Response.status(403).build();
+        }
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response layerDescriptions(LayerDescription layerDescription) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        em.merge(layerDescription);
-        et.commit();
-        return Response.status(200).entity(layerDescription).build();
+    public Response layerDescriptions(LayerDescription layerDescription, @HeaderParam("role") String role) {
+        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
+            EntityManager em = emf.createEntityManager();
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            em.merge(layerDescription);
+            et.commit();
+            return Response.status(200).entity(layerDescription).build();
+        }
+        else{
+            return Response.status(403).build();
+        }
     }
 }
