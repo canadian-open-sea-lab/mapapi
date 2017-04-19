@@ -16,9 +16,9 @@ import javax.ws.rs.ext.Provider;
 public class AuthenticationFilter implements ContainerRequestFilter {
 
     public static final String ADMIN_ROLE="admin";
+    public static final String DEFAULT_ROLE="default";
 
     public AuthenticationFilter() {
-        System.out.println("Initializing filter");
     }
 
     public void filter(ContainerRequestContext requestContext) {
@@ -29,11 +29,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 Configurations configs = new Configurations();
                 XMLConfiguration xml = configs.xml("authentication.xml");
                 if (apiKey.equals(xml.getString("apikey"))){
-                    headers.add("role", ADMIN_ROLE);
+                    headers.putSingle("role", ADMIN_ROLE);
                 }
             } catch (ConfigurationException e) {
                 e.printStackTrace();
             }
+        }
+        else{
+            headers.putSingle("role", DEFAULT_ROLE);
         }
     }
 }
