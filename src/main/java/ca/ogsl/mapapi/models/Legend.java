@@ -35,10 +35,10 @@ public class Legend {
     private String labelEn;
     @Basic
     @Column(name = "isdefaultlegend")
-    @JsonProperty(value="isDefaultLegend")
+    @JsonProperty(value = "isDefaultLegend")
     private Boolean isDefaultLegend;
 
-    public String getLabel__(){
+    public String getLabel__() {
         return PersistenceManager.getLocalizedString(this.labelFr, this.labelEn);
     }
 
@@ -57,6 +57,7 @@ public class Legend {
     public void setLabelEn(String labelEn) {
         this.labelEn = labelEn;
     }
+
     public Integer getId() {
         return id;
     }
@@ -81,7 +82,7 @@ public class Legend {
         this.urlEn = urlen;
     }
 
-    public String getUrl__(){
+    public String getUrl__() {
         return PersistenceManager.getLocalizedString(this.urlFr, this.urlEn);
     }
 
@@ -92,6 +93,7 @@ public class Legend {
     public void setLayerId(Integer layerId) {
         this.layerId = layerId;
     }
+
     public Layer getLayer() {
         return layer;
     }
@@ -100,12 +102,12 @@ public class Legend {
         this.layer = layer;
     }
 
-    @JsonProperty(value="isDefaultLegend")
+    @JsonProperty(value = "isDefaultLegend")
     public Boolean isDefaultLegend() {
         return isDefaultLegend;
     }
 
-    @JsonProperty(value="isDefaultLegend")
+    @JsonProperty(value = "isDefaultLegend")
     public void setDefaultLegend(Boolean defaultLegend) {
         isDefaultLegend = defaultLegend;
     }
@@ -120,8 +122,11 @@ public class Legend {
         if (id != null ? !id.equals(legend.id) : legend.id != null) return false;
         if (urlFr != null ? !urlFr.equals(legend.urlFr) : legend.urlFr != null) return false;
         if (urlEn != null ? !urlEn.equals(legend.urlEn) : legend.urlEn != null) return false;
-
-        return true;
+        if (layerId != null ? !layerId.equals(legend.layerId) : legend.layerId != null) return false;
+        if (layer != null ? !layer.equals(legend.layer) : legend.layer != null) return false;
+        if (labelFr != null ? !labelFr.equals(legend.labelFr) : legend.labelFr != null) return false;
+        if (labelEn != null ? !labelEn.equals(legend.labelEn) : legend.labelEn != null) return false;
+        return isDefaultLegend != null ? isDefaultLegend.equals(legend.isDefaultLegend) : legend.isDefaultLegend == null;
     }
 
     @Override
@@ -129,6 +134,11 @@ public class Legend {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (urlFr != null ? urlFr.hashCode() : 0);
         result = 31 * result + (urlEn != null ? urlEn.hashCode() : 0);
+        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
+        result = 31 * result + (layer != null ? layer.hashCode() : 0);
+        result = 31 * result + (labelFr != null ? labelFr.hashCode() : 0);
+        result = 31 * result + (labelEn != null ? labelEn.hashCode() : 0);
+        result = 31 * result + (isDefaultLegend != null ? isDefaultLegend.hashCode() : 0);
         return result;
     }
 }

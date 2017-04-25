@@ -64,6 +64,7 @@ public class UrlParam {
     public void setSource(Source source) {
         this.source = source;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,10 +74,9 @@ public class UrlParam {
 
         if (id != null ? !id.equals(urlParam.id) : urlParam.id != null) return false;
         if (name != null ? !name.equals(urlParam.name) : urlParam.name != null) return false;
-        if (value != null ? !value.equals(urlParam.value) : urlParam.value != null)
-            return false;
-
-        return true;
+        if (value != null ? !value.equals(urlParam.value) : urlParam.value != null) return false;
+        if (sourceId != null ? !sourceId.equals(urlParam.sourceId) : urlParam.sourceId != null) return false;
+        return source != null ? source.equals(urlParam.source) : urlParam.source == null;
     }
 
     @Override
@@ -84,6 +84,8 @@ public class UrlParam {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (sourceId != null ? sourceId.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
         return result;
     }
 }

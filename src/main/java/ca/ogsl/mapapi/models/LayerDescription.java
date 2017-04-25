@@ -24,7 +24,7 @@ public class LayerDescription {
     @Basic
     @Column(name = "titleen")
     private String titleEn;
-    @Column(name ="layer_id")
+    @Column(name = "layer_id")
     private Integer layerId;
 
     public Integer getId() {
@@ -66,11 +66,12 @@ public class LayerDescription {
     public void setTitleEn(String titleEn) {
         this.titleEn = titleEn;
     }
-    public String getTitle__(){
+
+    public String getTitle__() {
         return PersistenceManager.getLocalizedString(this.titleFr, this.titleEn);
     }
 
-    public String getDescription__(){
+    public String getDescription__() {
         return PersistenceManager.getLocalizedString(this.descriptionFr, this.descriptionEn);
     }
 
@@ -94,8 +95,9 @@ public class LayerDescription {
             return false;
         if (descriptionEn != null ? !descriptionEn.equals(that.descriptionEn) : that.descriptionEn != null)
             return false;
-
-        return true;
+        if (titleFr != null ? !titleFr.equals(that.titleFr) : that.titleFr != null) return false;
+        if (titleEn != null ? !titleEn.equals(that.titleEn) : that.titleEn != null) return false;
+        return layerId != null ? layerId.equals(that.layerId) : that.layerId == null;
     }
 
     @Override
@@ -103,6 +105,9 @@ public class LayerDescription {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (descriptionFr != null ? descriptionFr.hashCode() : 0);
         result = 31 * result + (descriptionEn != null ? descriptionEn.hashCode() : 0);
+        result = 31 * result + (titleFr != null ? titleFr.hashCode() : 0);
+        result = 31 * result + (titleEn != null ? titleEn.hashCode() : 0);
+        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
         return result;
     }
 }

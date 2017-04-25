@@ -56,6 +56,7 @@ public class Layer {
     @OneToMany(mappedBy = "layer", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JsonManagedReference
     private Set<Legend> legends;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "style_id")
     private Style style;
@@ -201,23 +202,40 @@ public class Layer {
         Layer layer = (Layer) o;
 
         if (id != null ? !id.equals(layer.id) : layer.id != null) return false;
+        if (labelFr != null ? !labelFr.equals(layer.labelFr) : layer.labelFr != null) return false;
+        if (labelEn != null ? !labelEn.equals(layer.labelEn) : layer.labelEn != null) return false;
         if (code != null ? !code.equals(layer.code) : layer.code != null) return false;
         if (type != null ? !type.equals(layer.type) : layer.type != null) return false;
         if (zIndex != null ? !zIndex.equals(layer.zIndex) : layer.zIndex != null) return false;
         if (opacity != null ? !opacity.equals(layer.opacity) : layer.opacity != null) return false;
         if (isVisible != null ? !isVisible.equals(layer.isVisible) : layer.isVisible != null) return false;
-
-        return true;
+        if (source != null ? !source.equals(layer.source) : layer.source != null) return false;
+        if (isBackground != null ? !isBackground.equals(layer.isBackground) : layer.isBackground != null) return false;
+        if (isTimeEnabled != null ? !isTimeEnabled.equals(layer.isTimeEnabled) : layer.isTimeEnabled != null)
+            return false;
+        if (topics != null ? !topics.equals(layer.topics) : layer.topics != null) return false;
+        if (legends != null ? !legends.equals(layer.legends) : layer.legends != null) return false;
+        if (style != null ? !style.equals(layer.style) : layer.style != null) return false;
+        return styleId != null ? styleId.equals(layer.styleId) : layer.styleId == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (labelFr != null ? labelFr.hashCode() : 0);
+        result = 31 * result + (labelEn != null ? labelEn.hashCode() : 0);
         result = 31 * result + (code != null ? code.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (zIndex != null ? zIndex.hashCode() : 0);
         result = 31 * result + (opacity != null ? opacity.hashCode() : 0);
         result = 31 * result + (isVisible != null ? isVisible.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (isBackground != null ? isBackground.hashCode() : 0);
+        result = 31 * result + (isTimeEnabled != null ? isTimeEnabled.hashCode() : 0);
+        result = 31 * result + (topics != null ? topics.hashCode() : 0);
+        result = 31 * result + (legends != null ? legends.hashCode() : 0);
+        result = 31 * result + (style != null ? style.hashCode() : 0);
+        result = 31 * result + (styleId != null ? styleId.hashCode() : 0);
         return result;
     }
 }

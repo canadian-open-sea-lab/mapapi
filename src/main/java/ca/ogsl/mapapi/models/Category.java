@@ -25,7 +25,7 @@ public class Category {
     private String type;
     @Basic
     @Column(name = "isexpanded")
-    @JsonProperty(value="isExpanded")
+    @JsonProperty(value = "isExpanded")
     private Boolean isExpanded;
     @Basic
     @Column(name = "layer_id")
@@ -34,7 +34,7 @@ public class Category {
             @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
             @JoinColumn(name = "child_id", referencedColumnName = "id", nullable = false)})
     @OrderBy("type ASC")
-    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Collection<Category> categories;
 
     public Integer getId() {
@@ -45,7 +45,7 @@ public class Category {
         this.id = id;
     }
 
-    public String getLabel__(){
+    public String getLabel__() {
         return PersistenceManager.getLocalizedString(this.labelFr, this.labelEn);
     }
 
@@ -64,6 +64,7 @@ public class Category {
     public void setLabelEn(String labelEn) {
         this.labelEn = labelEn;
     }
+
     public String getType() {
         return type;
     }
@@ -72,16 +73,17 @@ public class Category {
         this.type = type;
     }
 
-    @JsonProperty(value="isExpanded")
+    @JsonProperty(value = "isExpanded")
     public Boolean isExpanded() {
         return isExpanded;
     }
-    @JsonProperty(value="isExpanded")
+
+    @JsonProperty(value = "isExpanded")
     public Boolean getExpanded() {
         return isExpanded;
     }
 
-    @JsonProperty(value="isExpanded")
+    @JsonProperty(value = "isExpanded")
     public void setExpanded(Boolean expanded) {
         isExpanded = expanded;
     }
@@ -114,8 +116,8 @@ public class Category {
         if (labelEn != null ? !labelEn.equals(category.labelEn) : category.labelEn != null) return false;
         if (type != null ? !type.equals(category.type) : category.type != null) return false;
         if (isExpanded != null ? !isExpanded.equals(category.isExpanded) : category.isExpanded != null) return false;
-
-        return true;
+        if (layerId != null ? !layerId.equals(category.layerId) : category.layerId != null) return false;
+        return categories != null ? categories.equals(category.categories) : category.categories == null;
     }
 
     @Override
@@ -125,6 +127,8 @@ public class Category {
         result = 31 * result + (labelEn != null ? labelEn.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (isExpanded != null ? isExpanded.hashCode() : 0);
+        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
+        result = 31 * result + (categories != null ? categories.hashCode() : 0);
         return result;
     }
 }

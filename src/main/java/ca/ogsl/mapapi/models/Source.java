@@ -173,6 +173,7 @@ public class Source {
     public void setUrlParams(Set<UrlParam> urlParams) {
         this.urlParams = urlParams;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -192,8 +193,9 @@ public class Source {
         if (styles != null ? !styles.equals(source.styles) : source.styles != null) return false;
         if (wmsLayers != null ? !wmsLayers.equals(source.wmsLayers) : source.wmsLayers != null) return false;
         if (tilesOrigin != null ? !tilesOrigin.equals(source.tilesOrigin) : source.tilesOrigin != null) return false;
-
-        return true;
+        if (isTimeEnabled != null ? !isTimeEnabled.equals(source.isTimeEnabled) : source.isTimeEnabled != null)
+            return false;
+        return urlParams != null ? urlParams.equals(source.urlParams) : source.urlParams == null;
     }
 
     @Override
@@ -210,6 +212,8 @@ public class Source {
         result = 31 * result + (styles != null ? styles.hashCode() : 0);
         result = 31 * result + (wmsLayers != null ? wmsLayers.hashCode() : 0);
         result = 31 * result + (tilesOrigin != null ? tilesOrigin.hashCode() : 0);
+        result = 31 * result + (isTimeEnabled != null ? isTimeEnabled.hashCode() : 0);
+        result = 31 * result + (urlParams != null ? urlParams.hashCode() : 0);
         return result;
     }
 }

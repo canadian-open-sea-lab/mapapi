@@ -41,9 +41,7 @@ public class Style {
         Style style = (Style) o;
 
         if (id != null ? !id.equals(style.id) : style.id != null) return false;
-        if (data != null ? !data.equals(style.data) : style.data != null) return false;
-
-        return true;
+        return data != null ? data.equals(style.data) : style.data == null;
     }
 
     @Override

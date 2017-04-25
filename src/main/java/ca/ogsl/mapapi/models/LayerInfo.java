@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerInfo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -57,7 +58,7 @@ public class LayerInfo {
         this.labelEn = labelEn;
     }
 
-    public String getLabel__(){
+    public String getLabel__() {
         return PersistenceManager.getLocalizedString(this.labelFr, this.labelEn);
     }
 
@@ -77,7 +78,7 @@ public class LayerInfo {
         this.valueEn = valueEn;
     }
 
-    public String getValue__(){
+    public String getValue__() {
         return PersistenceManager.getLocalizedString(this.valueFr, this.valueEn);
     }
 
@@ -97,7 +98,7 @@ public class LayerInfo {
         this.urlEn = urlEn;
     }
 
-    public String getUrl__(){
+    public String getUrl__() {
         return PersistenceManager.getLocalizedString(this.urlFr, this.urlEn);
     }
 
@@ -123,8 +124,7 @@ public class LayerInfo {
         if (valueEn != null ? !valueEn.equals(layerInfo.valueEn) : layerInfo.valueEn != null) return false;
         if (urlFr != null ? !urlFr.equals(layerInfo.urlFr) : layerInfo.urlFr != null) return false;
         if (urlEn != null ? !urlEn.equals(layerInfo.urlEn) : layerInfo.urlEn != null) return false;
-
-        return true;
+        return layerId != null ? layerId.equals(layerInfo.layerId) : layerInfo.layerId == null;
     }
 
     @Override
@@ -136,6 +136,7 @@ public class LayerInfo {
         result = 31 * result + (valueEn != null ? valueEn.hashCode() : 0);
         result = 31 * result + (urlFr != null ? urlFr.hashCode() : 0);
         result = 31 * result + (urlEn != null ? urlEn.hashCode() : 0);
+        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
         return result;
     }
 }

@@ -12,7 +12,7 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "root")
     private Category root;
     @Basic
@@ -43,13 +43,15 @@ public class Topic {
         Topic topic = (Topic) o;
 
         if (id != null ? !id.equals(topic.id) : topic.id != null) return false;
-
-        return true;
+        if (root != null ? !root.equals(topic.root) : topic.root != null) return false;
+        return code != null ? code.equals(topic.code) : topic.code == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (root != null ? root.hashCode() : 0);
+        result = 31 * result + (code != null ? code.hashCode() : 0);
         return result;
     }
 
