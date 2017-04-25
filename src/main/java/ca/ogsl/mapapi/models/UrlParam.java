@@ -78,14 +78,4 @@ public class UrlParam {
         if (sourceId != null ? !sourceId.equals(urlParam.sourceId) : urlParam.sourceId != null) return false;
         return source != null ? source.equals(urlParam.source) : urlParam.source == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (sourceId != null ? sourceId.hashCode() : 0);
-        result = 31 * result + (source != null ? source.hashCode() : 0);
-        return result;
-    }
 }

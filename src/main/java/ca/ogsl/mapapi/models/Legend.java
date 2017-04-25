@@ -128,17 +128,4 @@ public class Legend {
         if (labelEn != null ? !labelEn.equals(legend.labelEn) : legend.labelEn != null) return false;
         return isDefaultLegend != null ? isDefaultLegend.equals(legend.isDefaultLegend) : legend.isDefaultLegend == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (urlFr != null ? urlFr.hashCode() : 0);
-        result = 31 * result + (urlEn != null ? urlEn.hashCode() : 0);
-        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
-        result = 31 * result + (layer != null ? layer.hashCode() : 0);
-        result = 31 * result + (labelFr != null ? labelFr.hashCode() : 0);
-        result = 31 * result + (labelEn != null ? labelEn.hashCode() : 0);
-        result = 31 * result + (isDefaultLegend != null ? isDefaultLegend.hashCode() : 0);
-        return result;
-    }
 }

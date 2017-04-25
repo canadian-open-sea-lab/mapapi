@@ -119,16 +119,4 @@ public class Category {
         if (layerId != null ? !layerId.equals(category.layerId) : category.layerId != null) return false;
         return categories != null ? categories.equals(category.categories) : category.categories == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (labelFr != null ? labelFr.hashCode() : 0);
-        result = 31 * result + (labelEn != null ? labelEn.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (isExpanded != null ? isExpanded.hashCode() : 0);
-        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
-        result = 31 * result + (categories != null ? categories.hashCode() : 0);
-        return result;
-    }
 }

@@ -218,24 +218,4 @@ public class Layer {
         if (style != null ? !style.equals(layer.style) : layer.style != null) return false;
         return styleId != null ? styleId.equals(layer.styleId) : layer.styleId == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (labelFr != null ? labelFr.hashCode() : 0);
-        result = 31 * result + (labelEn != null ? labelEn.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (zIndex != null ? zIndex.hashCode() : 0);
-        result = 31 * result + (opacity != null ? opacity.hashCode() : 0);
-        result = 31 * result + (isVisible != null ? isVisible.hashCode() : 0);
-        result = 31 * result + (source != null ? source.hashCode() : 0);
-        result = 31 * result + (isBackground != null ? isBackground.hashCode() : 0);
-        result = 31 * result + (isTimeEnabled != null ? isTimeEnabled.hashCode() : 0);
-        result = 31 * result + (topics != null ? topics.hashCode() : 0);
-        result = 31 * result + (legends != null ? legends.hashCode() : 0);
-        result = 31 * result + (style != null ? style.hashCode() : 0);
-        result = 31 * result + (styleId != null ? styleId.hashCode() : 0);
-        return result;
-    }
 }

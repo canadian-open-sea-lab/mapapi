@@ -47,14 +47,6 @@ public class Topic {
         return code != null ? code.equals(topic.code) : topic.code == null;
     }
 
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (root != null ? root.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        return result;
-    }
-
     public Category getRoot() {
         return root;
     }

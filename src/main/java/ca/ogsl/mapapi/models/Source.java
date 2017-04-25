@@ -197,23 +197,4 @@ public class Source {
             return false;
         return urlParams != null ? urlParams.equals(source.urlParams) : source.urlParams == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (projection != null ? projection.hashCode() : 0);
-        result = 31 * result + (key != null ? key.hashCode() : 0);
-        result = 31 * result + (imagerySet != null ? imagerySet.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (format != null ? format.hashCode() : 0);
-        result = 31 * result + (wmsVersion != null ? wmsVersion.hashCode() : 0);
-        result = 31 * result + (isTiled != null ? isTiled.hashCode() : 0);
-        result = 31 * result + (styles != null ? styles.hashCode() : 0);
-        result = 31 * result + (wmsLayers != null ? wmsLayers.hashCode() : 0);
-        result = 31 * result + (tilesOrigin != null ? tilesOrigin.hashCode() : 0);
-        result = 31 * result + (isTimeEnabled != null ? isTimeEnabled.hashCode() : 0);
-        result = 31 * result + (urlParams != null ? urlParams.hashCode() : 0);
-        return result;
-    }
 }

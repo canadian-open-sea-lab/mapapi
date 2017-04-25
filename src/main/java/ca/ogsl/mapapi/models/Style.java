@@ -43,11 +43,4 @@ public class Style {
         if (id != null ? !id.equals(style.id) : style.id != null) return false;
         return data != null ? data.equals(style.data) : style.data == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (data != null ? data.hashCode() : 0);
-        return result;
-    }
 }

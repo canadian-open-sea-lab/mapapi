@@ -99,15 +99,4 @@ public class LayerDescription {
         if (titleEn != null ? !titleEn.equals(that.titleEn) : that.titleEn != null) return false;
         return layerId != null ? layerId.equals(that.layerId) : that.layerId == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (descriptionFr != null ? descriptionFr.hashCode() : 0);
-        result = 31 * result + (descriptionEn != null ? descriptionEn.hashCode() : 0);
-        result = 31 * result + (titleFr != null ? titleFr.hashCode() : 0);
-        result = 31 * result + (titleEn != null ? titleEn.hashCode() : 0);
-        result = 31 * result + (layerId != null ? layerId.hashCode() : 0);
-        return result;
-    }
 }
