@@ -1,171 +1,41 @@
 package ca.ogsl.mapapi.services;
 
-import ca.ogsl.mapapi.dao.PersistenceManager;
+import ca.ogsl.mapapi.dao.GenericDao;
+import ca.ogsl.mapapi.dao.TopicDao;
+import ca.ogsl.mapapi.errorhandling.AppException;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.Topic;
-import ca.ogsl.mapapi.util.AppConstants;
-import ca.ogsl.mapapi.util.GenericsUtil;
-import org.hibernate.transform.DistinctResultTransformer;
+import ca.ogsl.mapapi.util.ValidationUtil;
 
-import javax.persistence.*;
-import javax.persistence.criteria.*;
-import javax.ws.rs.*;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
-@Path("topic")
-@Produces(MediaType.APPLICATION_JSON)
 public class TopicService {
 
-    public TopicService() {
+    private GenericDao genericDao = new GenericDao();
+    private TopicDao topicDao = new TopicDao();
+
+    public List<Topic> listTopics(String lang) throws AppException {
+        return this.genericDao.getAllEntities(lang, Topic.class);
     }
 
-    @GET
-    public Response listTopics(@QueryParam("lang") String lang) {
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        List<Topic> topics;
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Topic> cq = cb.createQuery(Topic.class);
-            Root<Topic> root = cq.from(Topic.class);
-            TypedQuery<Topic> tq = em.createQuery(cq);
-            topics = tq.getResultList();
-            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(topics)).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return Response.status(500).build();
+    public Topic getTopicForId(String lang, Integer id) {
+        return this.genericDao.getEntityFromId(lang, id, Topic.class);
     }
 
-    @GET
-    @Path("{id}")
-    public Response getTopicForId(@QueryParam("lang") String lang, @PathParam("id") Integer id) {
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        Topic topic;
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Topic> cq = cb.createQuery(Topic.class);
-            Root<Topic> root = cq.from(Topic.class);
-            cq.where(cb.equal(root.get("id"), id));
-            TypedQuery<Topic> tq = em.createQuery(cq);
-            topic = GenericsUtil.getSingleResultOrNull(tq);
-            return Response.status(200).entity(topic).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return Response.status(500).build();
+    public Topic getTopicForCode(String lang, String code) throws Exception {
+        return this.topicDao.getTopicForCode(lang, code);
     }
 
-    @GET
-    @Path("getTopicForCode")
-    public Response getTopicForCode(@QueryParam("lang") String lang, @QueryParam("code") String code) {
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        Topic topic;
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Topic> cq = cb.createQuery(Topic.class);
-            Root<Topic> root = cq.from(Topic.class);
-            Join categoryJoin = (Join) root.fetch("root", JoinType.LEFT);
-            cq.where(cb.equal(root.get("code"), code));
-            TypedQuery<Topic> tq = em.createQuery(cq);
-            topic = GenericsUtil.getSingleResultOrNull(tq);
-            GenericsUtil gu = new GenericsUtil();
-            Topic finalTopic = gu.recursiveInitialize(topic, Topic.class);
-            return Response.status(200).entity(topic).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return Response.status(500).build();
+    public Topic postCreateTopic(Topic topic, String role) throws AppException {
+        ValidationUtil.validateAdminRole(role);
+        return this.genericDao.mergeEntity(topic);
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response topics(Topic topic, @HeaderParam("role") String role) {
-        if (role.equals(AppConstants.ADMIN_ROLE)) {
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-            EntityManager em = emf.createEntityManager();
-            EntityTransaction et = em.getTransaction();
-            try {
-                et.begin();
-                em.merge(topic);
-                et.commit();
-                return Response.status(200).entity(topic).build();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                em.close();
-            }
-            return Response.status(500).build();
-        } else {
-            return Response.status(403).build();
-        }
+    public List<Layer> getBaseLayersForTopic(String lang, String code) {
+        return this.topicDao.getBaseLayersForTopicCode(lang, code);
     }
 
-    @GET
-    @Path("{code}/BaseLayerCatalog")
-    public Response getBaseLayersForTopic(@QueryParam("lang") String lang, @PathParam("code") String code) {
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        List<Layer> layers;
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
-            Root<Layer> root = cq.from(Layer.class);
-            Join topicJoin = root.join("topics", JoinType.LEFT);
-            Join sourceJoin = (Join) root.fetch("source", JoinType.LEFT);
-            Join urlParamJoin = (Join) sourceJoin.fetch("urlParams", JoinType.LEFT);
-            cq.where(cb.and(cb.equal(topicJoin.get("code"), code), cb.equal(root.get("isBackground"), true)));
-            TypedQuery<Layer> tq = em.createQuery(cq);
-            layers = tq.getResultList();
-            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return Response.status(500).build();
-    }
-
-    @GET
-    @Path("{code}/LayerCatalog")
-    public Response getLayersForTopic(@QueryParam("lang") String lang, @PathParam("code") String code) {
-        PersistenceManager.setLanguageContext(lang);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
-        EntityManager em = emf.createEntityManager();
-        List<Layer> layers;
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Layer> cq = cb.createQuery(Layer.class);
-            Root<Layer> root = cq.from(Layer.class);
-            Join topicJoin = root.join("topics", JoinType.LEFT);
-            Join legendsJoin = (Join) root.fetch("legends", JoinType.LEFT);
-            Join sourceJoin = (Join) root.fetch("source", JoinType.LEFT);
-            Join urlParamJoin = (Join) sourceJoin.fetch("urlParams", JoinType.LEFT);
-            cq.where(cb.and(cb.equal(topicJoin.get("code"), code), cb.equal(root.get("isBackground"), false)));
-            TypedQuery<Layer> tq = em.createQuery(cq);
-            layers = tq.getResultList();
-            return Response.status(200).entity(DistinctResultTransformer.INSTANCE.transformList(layers)).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-        return Response.status(500).build();
+    public List<Layer> getLayersForTopic(String lang, String code) {
+        return this.topicDao.getLayersForTopicCode(lang, code);
     }
 }
