@@ -26,7 +26,7 @@ public class LayerDescriptionService {
 
     public LayerDescription postCreateLayerDescription(LayerDescription layerDescription, String
             role) throws
-            AppException{
+            AppException {
         ValidationUtil.validateAdminRole(role);
         return this.genericDao.mergeEntity(layerDescription);
     }

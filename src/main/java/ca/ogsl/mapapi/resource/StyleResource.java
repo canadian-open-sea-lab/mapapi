@@ -23,8 +23,8 @@ public class StyleResource {
 
     @GET
     @Path("{id}")
-    public Response getStyleForId(@QueryParam("lang") String lang, @PathParam("id") Integer id) throws AppException{
-        Style style= this.styleService.getStyleForId(lang,id);
+    public Response getStyleForId(@QueryParam("lang") String lang, @PathParam("id") Integer id) throws AppException {
+        Style style = this.styleService.getStyleForId(lang, id);
         return Response.status(200).entity(style).build();
     }
 }

@@ -29,12 +29,12 @@ public class GenericDao {
         }
     }
 
-    public <T> List<T> getAllEntities(String lang, Class clazz){
+    public <T> List<T> getAllEntities(String lang, Class clazz) {
         PersistenceManager.setLanguageContext(lang);
         EntityManager em = MapApiEntityManagerFactory.createEntityManager();
+        CriteriaBuilder cb = MapApiEntityManagerFactory.getCriteriaBuilder();
         List<T> entities;
         try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(clazz);
             Root<T> root = cq.from(clazz);
             TypedQuery<T> tq = em.createQuery(cq);
@@ -80,10 +80,10 @@ public class GenericDao {
     public <T> void deleteEntityFromId(Integer id, Class clazz) {
         EntityManager em = MapApiEntityManagerFactory.createEntityManager();
         EntityTransaction et = em.getTransaction();
+        CriteriaBuilder cb = MapApiEntityManagerFactory.getCriteriaBuilder();
         T databaseEntity;
         try {
             et.begin();
-            CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(clazz);
             Root<T> root = cq.from(clazz);
             cq.where(cb.equal(root.get("id"), id));
