@@ -1,6 +1,7 @@
 package ca.ogsl.mapapi.dao;
 
 import ca.ogsl.mapapi.util.GenericsUtil;
+import org.hibernate.transform.DistinctResultTransformer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -8,6 +9,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 public class GenericDao {
     public <T> T getEntityFromCode(String lang, String code, Class clazz) {
@@ -25,6 +27,23 @@ public class GenericDao {
         } finally {
             em.close();
         }
+    }
+
+    public <T> List<T> getAllEntities(String lang, Class clazz){
+        PersistenceManager.setLanguageContext(lang);
+        EntityManager em = MapApiEntityManagerFactory.createEntityManager();
+        List<T> entities;
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(clazz);
+            Root<T> root = cq.from(clazz);
+            TypedQuery<T> tq = em.createQuery(cq);
+            entities = tq.getResultList();
+            entities = DistinctResultTransformer.INSTANCE.transformList(entities);
+        } finally {
+            em.close();
+        }
+        return entities;
     }
 
     public <T> T getEntityFromId(String lang, Integer id, Class clazz) {
