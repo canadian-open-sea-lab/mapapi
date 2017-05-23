@@ -22,11 +22,11 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>ca.ogsl.mapapi.services</param-value>
+            <param-value>ca.ogsl.mapapi.resource</param-value>
         </init-param>
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
-            <param-value>ca.ogsl.mapapi.services.JacksonObjectMapperProvider,
+            <param-value>ca.ogsl.mapapi.util.JacksonObjectMapperProvider,
                 ca.ogsl.mapapi.filter.AuthenticationFilter
             </param-value>
         </init-param>
@@ -36,4 +36,8 @@
         <servlet-name>services</servlet-name>
         <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
+
+    <listener>
+        <listener-class>ca.ogsl.mapapi.dao.MapApiEntityManagerFactory</listener-class>
+    </listener>
 </web-app>

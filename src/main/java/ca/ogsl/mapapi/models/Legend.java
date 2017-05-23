@@ -1,8 +1,7 @@
 package ca.ogsl.mapapi.models;
 
-import ca.ogsl.mapapi.services.PersistenceManager;
+import ca.ogsl.mapapi.dao.PersistenceManager;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

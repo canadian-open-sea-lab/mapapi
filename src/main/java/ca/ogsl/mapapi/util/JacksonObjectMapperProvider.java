@@ -1,4 +1,4 @@
-package ca.ogsl.mapapi.services;
+package ca.ogsl.mapapi.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,26 +31,26 @@ public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper
         //if (type == CombinedAnnotationBean.class) {
         //    return combinedObjectMapper;
         //} else {
-            return defaultObjectMapper;
+        return defaultObjectMapper;
         //}
     }
 
     private static ObjectMapper createCombinedObjectMapper() {
         return new ObjectMapper();
-                //.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-                //.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
-                //.setAnnotationIntrospector(createJaxbJacksonAnnotationIntrospector());
+        //.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        //.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true)
+        //.setAnnotationIntrospector(createJaxbJacksonAnnotationIntrospector());
     }
 
     private static ObjectMapper createDefaultMapper() {
         final ObjectMapper mapper = new ObjectMapper();
-        Hibernate5Module module=new Hibernate5Module();
+        Hibernate5Module module = new Hibernate5Module();
         module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
         mapper.registerModule(module);
         mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
         mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
         mapper.registerModule(new JavaTimeModule());
-                
+
         return mapper;
     }
 

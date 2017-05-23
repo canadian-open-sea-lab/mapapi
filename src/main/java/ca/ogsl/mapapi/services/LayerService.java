@@ -1,9 +1,10 @@
 package ca.ogsl.mapapi.services;
 
-import ca.ogsl.mapapi.filter.AuthenticationFilter;
+import ca.ogsl.mapapi.dao.PersistenceManager;
 import ca.ogsl.mapapi.models.Layer;
 import ca.ogsl.mapapi.models.LayerDescription;
 import ca.ogsl.mapapi.models.LayerInfo;
+import ca.ogsl.mapapi.util.AppConstants;
 import ca.ogsl.mapapi.util.GenericsUtil;
 import org.hibernate.transform.DistinctResultTransformer;
 
@@ -52,7 +53,7 @@ public class LayerService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response layers(Layer layer, @HeaderParam("role") String role) {
-        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+        if (role.equals(AppConstants.ADMIN_ROLE)) {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
             EntityManager em = emf.createEntityManager();
             EntityTransaction et = em.getTransaction();
@@ -67,8 +68,7 @@ public class LayerService {
                 em.close();
             }
             return Response.status(500).build();
-        }
-        else{
+        } else {
             return Response.status(403).build();
         }
     }

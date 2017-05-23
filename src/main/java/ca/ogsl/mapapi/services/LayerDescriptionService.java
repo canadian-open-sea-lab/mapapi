@@ -1,14 +1,16 @@
 package ca.ogsl.mapapi.services;
 
-import ca.ogsl.mapapi.filter.AuthenticationFilter;
+import ca.ogsl.mapapi.dao.PersistenceManager;
 import ca.ogsl.mapapi.models.LayerDescription;
+import ca.ogsl.mapapi.util.AppConstants;
 import ca.ogsl.mapapi.util.GenericsUtil;
 import org.hibernate.transform.DistinctResultTransformer;
 
 import javax.persistence.*;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -68,7 +70,7 @@ public class LayerDescriptionService {
     @DELETE
     @Path("{id}")
     public Response deleteLayerDescriptionForId(@QueryParam("lang") String lang, @PathParam("id") Integer id, @HeaderParam("role") String role) {
-        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+        if (role.equals(AppConstants.ADMIN_ROLE)) {
             PersistenceManager.setLanguageContext(lang);
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
             EntityManager em = emf.createEntityManager();
@@ -91,8 +93,7 @@ public class LayerDescriptionService {
                 em.close();
             }
             return Response.status(500).build();
-        }
-        else{
+        } else {
             return Response.status(403).build();
         }
     }
@@ -100,7 +101,7 @@ public class LayerDescriptionService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response layerDescriptions(LayerDescription layerDescription, @HeaderParam("role") String role) {
-        if (role.equals(AuthenticationFilter.ADMIN_ROLE)) {
+        if (role.equals(AppConstants.ADMIN_ROLE)) {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("mapapi");
             EntityManager em = emf.createEntityManager();
             EntityTransaction et = em.getTransaction();
@@ -115,8 +116,7 @@ public class LayerDescriptionService {
                 em.close();
             }
             return Response.status(500).build();
-        }
-        else{
+        } else {
             return Response.status(403).build();
         }
     }
