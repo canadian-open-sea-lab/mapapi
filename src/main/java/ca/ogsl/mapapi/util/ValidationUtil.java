@@ -8,7 +8,7 @@ public class ValidationUtil {
 
     public static void validateAdminRole(String role) throws AppException {
         if (!role.equals(AppConstants.ADMIN_ROLE)) {
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 403,
+            throw new AppException(403, 403,
                     "You do not have the required permission", AppConstants.PORTAL_URL);
         }
     }

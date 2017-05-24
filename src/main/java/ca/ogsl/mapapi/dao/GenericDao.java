@@ -91,8 +91,6 @@ public class GenericDao {
             databaseEntity = GenericsUtil.getSingleResultOrNull(tq);
             em.remove(databaseEntity);
             et.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             em.close();
         }
