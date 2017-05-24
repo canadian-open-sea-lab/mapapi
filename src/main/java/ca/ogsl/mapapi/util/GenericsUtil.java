@@ -28,9 +28,10 @@ public class GenericsUtil {
         }
         return list.get(0);
     }
+
     public <T> T recursiveInitialize(T obj, Class clazz) throws Exception {
         Set<Object> dejaVu = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
-            recursiveInitialize(obj, dejaVu,clazz);
+        recursiveInitialize(obj, dejaVu, clazz);
         return obj;
     }
 
@@ -43,16 +44,16 @@ public class GenericsUtil {
             if (!Hibernate.isInitialized(obj)) {
                 Hibernate.initialize(obj);
             }
-            for (Field f:clazz.getDeclaredFields()){
+            for (Field f : clazz.getDeclaredFields()) {
                 f.setAccessible(true);
-                Object value=f.get(obj);
-                if (value!=null && !ClassUtils.isPrimitiveOrWrapper(f.getType())){
-                    this.recursiveInitialize(value,dejaVu,f.getType());
-                    if (value instanceof Collection){
+                Object value = f.get(obj);
+                if (value != null && !ClassUtils.isPrimitiveOrWrapper(f.getType())) {
+                    this.recursiveInitialize(value, dejaVu, f.getType());
+                    if (value instanceof Collection) {
                         ParameterizedType collectionType = (ParameterizedType) f.getGenericType();
                         Class<?> collectionClass = (Class<?>) collectionType.getActualTypeArguments()[0];
-                        for (Object item: (Collection<?>) value){
-                            this.recursiveInitialize(item, dejaVu,collectionClass);
+                        for (Object item : (Collection<?>) value) {
+                            this.recursiveInitialize(item, dejaVu, collectionClass);
                         }
                     }
                 }

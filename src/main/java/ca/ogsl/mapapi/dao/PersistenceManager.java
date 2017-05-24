@@ -1,4 +1,4 @@
-package ca.ogsl.mapapi.services;
+package ca.ogsl.mapapi.dao;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,7 +19,7 @@ public class PersistenceManager {
         return mapApiEMFFactory;
     }
 
-    public static void setLanguageContext(String lang){
+    public static void setLanguageContext(String lang) {
         if (lang == null) {
             lang = "fr";
         }

@@ -2,7 +2,6 @@ package ca.ogsl.mapapi.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-
 import javax.persistence.*;
 
 @Entity
