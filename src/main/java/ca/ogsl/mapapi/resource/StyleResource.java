@@ -13,7 +13,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class StyleResource {
 
-    StyleService styleService = new StyleService();
+    private StyleService styleService = new StyleService();
 
     @GET
     public Response listStyles(@QueryParam("lang") String lang) throws AppException {

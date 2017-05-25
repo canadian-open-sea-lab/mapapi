@@ -10,7 +10,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
 public class LayerDao {
 
     public List<Layer> listLayers(String lang) throws AppException {
