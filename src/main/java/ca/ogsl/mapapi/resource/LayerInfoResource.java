@@ -16,6 +16,11 @@ public class LayerInfoResource {
     private LayerInfoService layerInfoService = new LayerInfoService();
 
     @GET
+    public Response listLayerInfos(@QueryParam("lang") String lang) {
+        List<LayerInfo> layerInfos = this.layerInfoService.listLayerInfos(lang);
+        return Response.status(200).entity(layerInfos).build();
+    }
+    @GET
     @Path("{id}")
     public Response getLayerInfoForId(@QueryParam("lang") String lang, @PathParam("id") Integer id) {
         LayerInfo layerInfo = this.layerInfoService.getLayerInfoForId(lang, id);

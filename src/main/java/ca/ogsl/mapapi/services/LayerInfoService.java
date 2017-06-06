@@ -32,4 +32,8 @@ public class LayerInfoService {
         ValidationUtil.validateAdminRole(role);
         this.genericDao.deleteEntityFromId(id, LayerInfo.class);
     }
+
+    public List<LayerInfo> listLayerInfos(String lang) {
+        return this.genericDao.getAllEntities(lang, LayerInfo.class);
+    }
 }
