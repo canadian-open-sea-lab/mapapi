@@ -9,7 +9,7 @@
           validationQuery="SELECT 1"
           validationInterval="30000"
           driverClassName="org.postgresql.Driver"
-          url="jdbc:postgresql://SROGSLBDT01.uqar.ca:5432/mapapi"
+          url="jdbc:postgresql://SROGSLBD01.uqar.ca:5432/mapapi"
           maxActive="10"
           initialSize="3"
           minIdle="3"
